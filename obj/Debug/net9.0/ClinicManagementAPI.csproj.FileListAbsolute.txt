@@ -167,3 +167,4 @@ C:\Users\DELL\RiderProjects\ClinicManagementAPI\obj\Debug\net9.0\refint\ClinicMa
 C:\Users\DELL\RiderProjects\ClinicManagementAPI\obj\Debug\net9.0\ClinicManagementAPI.pdb
 C:\Users\DELL\RiderProjects\ClinicManagementAPI\obj\Debug\net9.0\ClinicManagementAPI.genruntimeconfig.cache
 C:\Users\DELL\RiderProjects\ClinicManagementAPI\obj\Debug\net9.0\ref\ClinicManagementAPI.dll
+C:\Users\DELL\RiderProjects\ClinicManagementAPI\obj\Debug\net9.0\ClinicManagementAPI.sourcelink.json

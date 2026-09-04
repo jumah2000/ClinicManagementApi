@@ -1,4 +1,6 @@
 ﻿using ClinicManagementAPI.DTOs.Requests.Appointment;
+using ClinicManagementAPI.DTOs.Responses.Appointment;
+using ClinicManagementAPI.DTOs.Responses.Common;
 using ClinicManagementAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,62 +10,60 @@ namespace ClinicManagementAPI.Controllers;
 [Route("api/[controller]")]
 public class AppointmentController(IAppointmentService appointmentService) : ControllerBase
 {
-    private readonly IAppointmentService _appointmentService =
-        appointmentService;
-
-    // POST: api/appointment
+   private readonly IAppointmentService _appointmentService = appointmentService;
+   
     [HttpPost]
-    public async Task<IActionResult> Create(
-        AppointmentCreateRequestDto request)
+    public async Task<IActionResult> Create(AppointmentCreateRequestDto request)
     {
         try
         {
             var result = await _appointmentService.CreateAsync(request);
 
-            return StatusCode(StatusCodes.Status201Created, new
-            {
-                responseCode = "00",
-                responseMessage = "Appointment created successfully.",
-                data = result
-            });
+            return StatusCode(
+                StatusCodes.Status201Created,
+                new ApiResponse<AppointmentResponseDto>
+                {
+                    ResponseCode = "00",
+                    ResponseMessage = "Appointment created successfully.",
+                    Data = result
+                });
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new
-            {
-                responseCode = "04",
-                responseMessage = ex.Message,
-                data = (object?)null
-            });
+            return NotFound(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "04",
+                    ResponseMessage = ex.Message,
+                    Data = null
+                });
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(new
-            {
-                responseCode = "01",
-                responseMessage = ex.Message,
-                data = (object?)null
-            });
+            return Conflict(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "01",
+                    ResponseMessage = ex.Message,
+                    Data = null
+                });
         }
     }
-
-
-    // GET: api/appointment
+    
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         var result = await _appointmentService.GetAllAsync();
 
-        return Ok(new
-        {
-            responseCode = "00",
-            responseMessage = "Appointments retrieved successfully.",
-            data = result
-        });
+        return Ok(
+            new ApiResponse<IEnumerable<AppointmentResponseDto>>
+            {
+                ResponseCode = "00",
+                ResponseMessage = "Appointments retrieved successfully.",
+                Data = result
+            });
     }
-
-
-    // GET: api/appointment/5
+    
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -71,24 +71,23 @@ public class AppointmentController(IAppointmentService appointmentService) : Con
 
         if (result == null)
         {
-            return NotFound(new
-            {
-                responseCode = "04",
-                responseMessage = "Appointment not found.",
-                data = (object?)null
-            });
+            return NotFound(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "04",
+                    ResponseMessage = "Appointment not found.",
+                    Data = null
+                });
         }
 
-        return Ok(new
-        {
-            responseCode = "00",
-            responseMessage = "Appointment retrieved successfully.",
-            data = result
-        });
+        return Ok(new ApiResponse<AppointmentResponseDto>
+            {
+                ResponseCode = "00",
+                ResponseMessage = "Appointment retrieved successfully.",
+                Data = result
+            });
     }
-
-
-    // PUT: api/appointment/5
+    
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(
         int id,
@@ -101,34 +100,35 @@ public class AppointmentController(IAppointmentService appointmentService) : Con
 
             if (!result)
             {
-                return NotFound(new
-                {
-                    responseCode = "04",
-                    responseMessage = "Appointment not found.",
-                    data = (object?)null
-                });
+                return NotFound(
+                    new ApiResponse<object>
+                    {
+                        ResponseCode = "04",
+                        ResponseMessage = "Appointment not found.",
+                        Data = null
+                    });
             }
 
-            return Ok(new
-            {
-                responseCode = "00",
-                responseMessage = "Appointment updated successfully.",
-                data = (object?)null
-            });
+            return Ok(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "00",
+                    ResponseMessage = "Appointment updated successfully.",
+                    Data = null
+                });
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(new
-            {
-                responseCode = "01",
-                responseMessage = ex.Message,
-                data = (object?)null
-            });
+            return BadRequest(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "01",
+                    ResponseMessage = ex.Message,
+                    Data = null
+                });
         }
     }
-
-
-    // DELETE: api/appointment/5
+    
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -138,29 +138,34 @@ public class AppointmentController(IAppointmentService appointmentService) : Con
 
             if (!result)
             {
-                return NotFound(new
-                {
-                    responseCode = "04",
-                    responseMessage = "Appointment not found or already cancelled.",
-                    data = (object?)null
-                });
+                return NotFound(
+                    new ApiResponse<object>
+                    {
+                        ResponseCode = "04",
+                        ResponseMessage =
+                            "Appointment not found or already cancelled.",
+                        Data = null
+                    });
             }
 
-            return Ok(new
-            {
-                responseCode = "00",
-                responseMessage = "Appointment cancelled successfully.",
-                data = (object?)null
-            });
+            return Ok(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "00",
+                    ResponseMessage = "Appointment cancelled successfully.",
+                    Data = null
+                });
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(new
-            {
-                responseCode = "01",
-                responseMessage = ex.Message,
-                data = (object?)null
-            });
+            return BadRequest(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "01",
+                    ResponseMessage = ex.Message,
+                    Data = null
+                });
         }
     }
+    
 }

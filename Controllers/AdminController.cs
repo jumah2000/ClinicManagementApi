@@ -1,4 +1,6 @@
 ﻿using ClinicManagementAPI.DTOs.Requests.Admin;
+using ClinicManagementAPI.DTOs.Responses.Admin;
+using ClinicManagementAPI.DTOs.Responses.Common;
 using ClinicManagementAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,40 +10,42 @@ namespace ClinicManagementAPI.Controllers;
 [Route("api/[controller]")]
 public class AdminController(IAdminService adminService) : ControllerBase
 {
-    private readonly IAdminService _adminService = adminService;
+   private readonly IAdminService _adminService = adminService;
 
     [HttpPost]
-    public async Task<IActionResult> Create(
-        AdminCreateRequestDto request)
+    public async Task<IActionResult> Create(AdminCreateRequestDto request)
     {
         try
         {
             var result = await _adminService.CreateAsync(request);
 
-            return StatusCode(StatusCodes.Status201Created, new
-            {
-                responseCode = "00",
-                responseMessage = "Admin created successfully.",
-                data = result
-            });
+            return StatusCode(StatusCodes.Status201Created,
+                new ApiResponse<AdminResponseDto>
+                {
+                    ResponseCode = "00",
+                    ResponseMessage = "Admin created successfully.",
+                    Data = result
+                });
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new
-            {
-                responseCode = "04",
-                responseMessage = ex.Message,
-                data = (object?)null
-            });
+            return NotFound(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "04",
+                    ResponseMessage = ex.Message,
+                    Data = null
+                });
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(new
-            {
-                responseCode = "01",
-                responseMessage = ex.Message,
-                data = (object?)null
-            });
+            return Conflict(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "01",
+                    ResponseMessage = ex.Message,
+                    Data = null
+                });
         }
     }
 
@@ -50,12 +54,13 @@ public class AdminController(IAdminService adminService) : ControllerBase
     {
         var result = await _adminService.GetAllAsync();
 
-        return Ok(new
-        {
-            responseCode = "00",
-            responseMessage = "Admins retrieved successfully.",
-            data = result
-        });
+        return Ok(
+            new ApiResponse<IEnumerable<AdminResponseDto>>
+            {
+                ResponseCode = "00",
+                ResponseMessage = "Admins retrieved successfully.",
+                Data = result
+            });
     }
 
     [HttpGet("{userId}")]
@@ -65,20 +70,22 @@ public class AdminController(IAdminService adminService) : ControllerBase
 
         if (result == null)
         {
-            return NotFound(new
-            {
-                responseCode = "04",
-                responseMessage = "Admin not found.",
-                data = (object?)null
-            });
+            return NotFound(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "04",
+                    ResponseMessage = "Admin not found.",
+                    Data = null
+                });
         }
 
-        return Ok(new
-        {
-            responseCode = "00",
-            responseMessage = "Admin retrieved successfully.",
-            data = result
-        });
+        return Ok(
+            new ApiResponse<AdminResponseDto>
+            {
+                ResponseCode = "00",
+                ResponseMessage = "Admin retrieved successfully.",
+                Data = result
+            });
     }
 
     [HttpPut("{id:int}")]
@@ -92,29 +99,32 @@ public class AdminController(IAdminService adminService) : ControllerBase
 
             if (!result)
             {
-                return NotFound(new
-                {
-                    responseCode = "04",
-                    responseMessage = "Admin not found.",
-                    data = (object?)null
-                });
+                return NotFound(
+                    new ApiResponse<object>
+                    {
+                        ResponseCode = "04",
+                        ResponseMessage = "Admin not found.",
+                        Data = null
+                    });
             }
 
-            return Ok(new
-            {
-                responseCode = "00",
-                responseMessage = "Admin updated successfully.",
-                data = (object?)null
-            });
+            return Ok(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "00",
+                    ResponseMessage = "Admin updated successfully.",
+                    Data = null
+                });
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(new
-            {
-                responseCode = "01",
-                responseMessage = ex.Message,
-                data = (object?)null
-            });
+            return BadRequest(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "01",
+                    ResponseMessage = ex.Message,
+                    Data = null
+                });
         }
     }
 
@@ -125,19 +135,22 @@ public class AdminController(IAdminService adminService) : ControllerBase
 
         if (!result)
         {
-            return NotFound(new
-            {
-                responseCode = "04",
-                responseMessage = "Admin not found.",
-                data = (object?)null
-            });
+            return NotFound(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "04",
+                    ResponseMessage = "Admin not found.",
+                    Data = null
+                });
         }
 
-        return Ok(new
-        {
-            responseCode = "00",
-            responseMessage = "Admin deactivated successfully.",
-            data = (object?)null
-        });
+        return Ok(
+            new ApiResponse<object>
+            {
+                ResponseCode = "00",
+                ResponseMessage = "Admin deactivated successfully.",
+                Data = null
+            });
     }
+    
 }

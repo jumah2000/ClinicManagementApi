@@ -1,4 +1,6 @@
 ﻿using ClinicManagementAPI.DTOs.Requests.Patient;
+using ClinicManagementAPI.DTOs.Responses.Common;
+using ClinicManagementAPI.DTOs.Responses.Patient;
 using ClinicManagementAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +10,7 @@ namespace ClinicManagementAPI.Controllers;
 [Route("api/[controller]")]
 public class PatientController(IPatientService patientService) : ControllerBase
 {
-    private readonly IPatientService _patientService = patientService;
+     private readonly IPatientService _patientService = patientService;
 
     [HttpPost]
     public async Task<IActionResult> Create(
@@ -18,30 +20,34 @@ public class PatientController(IPatientService patientService) : ControllerBase
         {
             var result = await _patientService.CreateAsync(request);
 
-            return StatusCode(StatusCodes.Status201Created, new
-            {
-                responseCode = "00",
-                responseMessage = "Patient created successfully.",
-                data = result
-            });
+            return StatusCode(
+                StatusCodes.Status201Created,
+                new ApiResponse<PatientResponseDto>
+                {
+                    ResponseCode = "00",
+                    ResponseMessage = "Patient created successfully.",
+                    Data = result
+                });
         }
         catch (KeyNotFoundException ex)
         {
-            return NotFound(new
-            {
-                responseCode = "04",
-                responseMessage = ex.Message,
-                data = (object?)null
-            });
+            return NotFound(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "04",
+                    ResponseMessage = ex.Message,
+                    Data = null
+                });
         }
         catch (InvalidOperationException ex)
         {
-            return Conflict(new
-            {
-                responseCode = "01",
-                responseMessage = ex.Message,
-                data = (object?)null
-            });
+            return Conflict(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "01",
+                    ResponseMessage = ex.Message,
+                    Data = null
+                });
         }
     }
 
@@ -50,12 +56,13 @@ public class PatientController(IPatientService patientService) : ControllerBase
     {
         var result = await _patientService.GetAllAsync();
 
-        return Ok(new
-        {
-            responseCode = "00",
-            responseMessage = "Patients retrieved successfully.",
-            data = result
-        });
+        return Ok(
+            new ApiResponse<IEnumerable<PatientResponseDto>>
+            {
+                ResponseCode = "00",
+                ResponseMessage = "Patients retrieved successfully.",
+                Data = result
+            });
     }
 
     [HttpGet("{userId}")]
@@ -65,20 +72,22 @@ public class PatientController(IPatientService patientService) : ControllerBase
 
         if (result == null)
         {
-            return NotFound(new
-            {
-                responseCode = "04",
-                responseMessage = "Patient not found.",
-                data = (object?)null
-            });
+            return NotFound(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "04",
+                    ResponseMessage = "Patient not found.",
+                    Data = null
+                });
         }
 
-        return Ok(new
-        {
-            responseCode = "00",
-            responseMessage = "Patient retrieved successfully.",
-            data = result
-        });
+        return Ok(
+            new ApiResponse<PatientResponseDto>
+            {
+                ResponseCode = "00",
+                ResponseMessage = "Patient retrieved successfully.",
+                Data = result
+            });
     }
 
     [HttpPut("{id:int}")]
@@ -92,29 +101,32 @@ public class PatientController(IPatientService patientService) : ControllerBase
 
             if (!result)
             {
-                return NotFound(new
-                {
-                    responseCode = "04",
-                    responseMessage = "Patient not found.",
-                    data = (object?)null
-                });
+                return NotFound(
+                    new ApiResponse<object>
+                    {
+                        ResponseCode = "04",
+                        ResponseMessage = "Patient not found.",
+                        Data = null
+                    });
             }
 
-            return Ok(new
-            {
-                responseCode = "00",
-                responseMessage = "Patient updated successfully.",
-                data = (object?)null
-            });
+            return Ok(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "00",
+                    ResponseMessage = "Patient updated successfully.",
+                    Data = null
+                });
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(new
-            {
-                responseCode = "01",
-                responseMessage = ex.Message,
-                data = (object?)null
-            });
+            return BadRequest(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "01",
+                    ResponseMessage = ex.Message,
+                    Data = null
+                });
         }
     }
 
@@ -125,19 +137,21 @@ public class PatientController(IPatientService patientService) : ControllerBase
 
         if (!result)
         {
-            return NotFound(new
-            {
-                responseCode = "04",
-                responseMessage = "Patient not found.",
-                data = (object?)null
-            });
+            return NotFound(
+                new ApiResponse<object>
+                {
+                    ResponseCode = "04",
+                    ResponseMessage = "Patient not found.",
+                    Data = null
+                });
         }
 
-        return Ok(new
-        {
-            responseCode = "00",
-            responseMessage = "Patient deactivated successfully.",
-            data = (object?)null
-        });
+        return Ok(new ApiResponse<object>
+            {
+                ResponseCode = "00",
+                ResponseMessage = "Patient deactivated successfully.",
+                Data = null
+            });
     }
+
 }
